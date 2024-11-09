@@ -1,58 +1,134 @@
-# COMP30023: Computer Systems - Project 1: Process Management
+# Process Management Simulator
 
 ## Overview
 
-This project involves implementing a process manager for memory allocation and process scheduling. The project is divided into two phases: 
-1. **Scheduling Algorithm**: Allocates CPU to processes under the assumption that memory requirements are always met.
-2. **Memory Allocation**: Involves allocating memory to processes before scheduling.
+This project implements a process management system that simulates CPU scheduling and memory allocation. It supports both simulated and real process management with different scheduling algorithms and memory allocation strategies.
 
-Both memory allocation and process scheduling are simulated, with an additional challenge task involving real processes.
+### Key Features
 
-## Process Manager
+- Multiple scheduling algorithms (SJF, RR)
+- Memory allocation strategies (Infinite, Best-Fit)
+- Real process management with IPC
+- Performance statistics tracking
+- Configurable quantum time
 
-- Operates in cycles, with each cycle following a quantum.
-- Manages processes through a series of tasks:
-  1. Check and terminate completed processes.
-  2. Add new processes to the input queue.
-  3. Move processes to the ready queue upon successful memory allocation.
-  4. Determine which process runs in the current cycle.
+## Technical Details
 
-## Programming Tasks
+### Scheduling Algorithms
 
-1. **Process Scheduling (Non-preemptive)**: Implement Shortest Job First (SJF) scheduling algorithm.
-2. **Process Scheduling (Preemptive)**: Implement Round Robin (RR) scheduling algorithm.
-3. **Memory Allocation**: Simulate memory allocation using a Best Fit algorithm.
-4. **Challenge Task (Optional)**: Control real processes during scheduling.
+1. **Shortest Job First (SJF)**
+   - Non-preemptive scheduling
+   - Selects process with shortest remaining execution time
+   - Handles ties using arrival time and process name
 
-## Program Specification
+2. **Round Robin (RR)**
+   - Preemptive scheduling
+   - Time quantum based execution
+   - Fair CPU distribution among processes
 
-- The program, named `allocate`, accepts command line arguments specifying the filename, scheduler type, memory strategy, and quantum.
-- The file format for process description is specified.
-- Expected behavior for program execution is detailed.
+### Memory Management
 
-## Expected Output
+- **Best Fit Algorithm**
+  - Efficient memory allocation
+  - Memory block splitting and merging
+  - Maximum memory size: 2048 units
+  - Dynamic memory block tracking
 
-- Details on the format of execution transcript and performance statistics are provided.
+### Process States
 
-## Marking Criteria
+Processes can be in one of these states:
+- Input Queue (newly arrived)
+- Ready Queue (memory allocated)
+- Running (being executed)
+- Finished (completed execution)
 
-The project is evaluated based on:
-1. Implementation of SJF and RR algorithms.
-2. Best Fit memory allocation.
-3. Controlling real processes (optional).
-4. Computation of performance statistics.
-5. Build quality.
-6. Quality of software practices.
+## Usage
 
-## Submission
+### Compilation
 
-- Code must be written in C and follow specified guidelines.
-- Submission involves providing the SHA1 hash of the commit and pushing to a designated repository.
+```bash
+make
+```
 
-## Testing
+### Running the Program
 
-- Several test cases are provided, but exhaustive testing is encouraged.
+```bash
+./allocate -f <filename> -s <scheduler> -m <memory-strategy> -q <quantum>
+```
 
-## Collaboration and Plagiarism
+### Parameters
 
-- Strict guidelines on individual work and academic integrity are emphasized.
+- `-f`: Input file path
+- `-s`: Scheduler type (SJF | RR)
+- `-m`: Memory strategy (infinite | best-fit)
+- `-q`: Quantum value (1-3)
+
+### Input File Format
+
+Each line represents a process with the format:
+```
+<arrival_time> <process_name> <service_time> <memory_requirement>
+```
+
+## Output Format
+
+### Process Events
+
+The simulator outputs events in the following format:
+```
+<time>,<event_type>,process_name=<name>,<additional_info>
+```
+
+Event types include:
+- READY
+- RUNNING
+- FINISHED
+
+### Performance Statistics
+
+At the end of simulation, outputs:
+- Average turnaround time
+- Time overhead (max and average)
+- Total makespan
+
+## Implementation Details
+
+The project is structured into several key components:
+
+1. **Process Manager**
+   - Central coordinator
+   - Handles process lifecycle
+   - Manages scheduling and memory allocation
+
+2. **Memory Manager**
+   - Implements best-fit allocation
+   - Handles memory block management
+   - Tracks memory usage
+
+3. **Scheduler**
+   - Implements SJF and RR algorithms
+   - Manages process queues
+   - Handles context switching
+
+4. **Real Process Handler**
+   - Manages actual process creation
+   - Handles IPC through pipes
+   - Process synchronization
+
+## Building and Testing
+
+### Requirements
+
+- GCC compiler
+- Make build system
+- POSIX-compliant system
+
+### Build Process
+
+1. Clone the repository
+2. Run `make` to build
+3. Run tests using provided test cases
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
